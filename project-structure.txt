@@ -1,0 +1,51 @@
+﻿├── AccountingSystem
+│   ├── Controllers
+│   │   └── WeatherForecastController.cs
+│   ├── Properties
+│   │   └── launchSettings.json
+│   ├── AccountingSystem.csproj
+│   ├── AccountingSystem.csproj.user
+│   ├── AccountingSystem.http
+│   ├── appsettings.Development.json
+│   ├── appsettings.json
+│   ├── Program.cs
+│   └── WeatherForecast.cs
+├── AccountingSystem_backup_20250920_155513
+│   ├── Controllers
+│   │   └── WeatherForecastController.cs
+│   ├── Properties
+│   │   └── launchSettings.json
+│   ├── AccountingSystem.csproj
+│   ├── AccountingSystem.csproj.user
+│   ├── AccountingSystem.http
+│   ├── appsettings.Development.json
+│   ├── appsettings.json
+│   ├── Program.cs
+│   └── WeatherForecast.cs
+├── src
+│   ├── Accounting.Api
+│   │   ├── Controllers
+│   │   │   └── WeatherForecastController.cs
+│   │   ├── Properties
+│   │   │   └── launchSettings.json
+│   │   ├── Accounting.Api.csproj
+│   │   ├── Accounting.Api.csproj.user
+│   │   ├── Accounting.Api.http
+│   │   ├── appsettings.Development.json
+│   │   ├── appsettings.json
+│   │   └── Program.cs
+│   ├── Accounting.Application
+│   │   ├── Accounting.Application.csproj
+│   │   └── Class1.cs
+│   ├── Accounting.Domain
+│   │   ├── Accounting.Domain.csproj
+│   │   └── Class1.cs
+│   ├── Accounting.Infrastructure
+│   │   ├── Accounting.Infrastructure.csproj
+│   │   └── Class1.cs
+│   └── Accounting.Tests
+│       ├── Accounting.Tests.csproj
+│       └── UnitTest1.cs
+├── AccountingSystem.sln
+├── migrate-to-src.ps1
+└── project-structure.txt
