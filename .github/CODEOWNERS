@@ -1,0 +1,28 @@
+# Global owners
+* @yourusername
+
+# API layer
+src/Accounting.Api/ @yourusername @api-team
+
+# Domain layer - requires architecture review
+src/Accounting.Domain/ @yourusername @architecture-team
+
+# Infrastructure layer
+src/Accounting.Infrastructure/ @yourusername @infrastructure-team
+
+# Application layer
+src/Accounting.Application/ @yourusername
+
+# Tests
+src/Accounting.Tests/ @yourusername @qa-team
+
+# CI/CD workflows
+.github/workflows/ @yourusername @devops-team
+
+# Documentation
+*.md @yourusername @docs-team
+
+# Configuration files
+*.json @yourusername
+*.yml @yourusername
+*.yaml @yourusername
