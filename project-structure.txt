@@ -1,39 +1,32 @@
-﻿├── AccountingSystem
-│   ├── Controllers
-│   │   └── WeatherForecastController.cs
-│   ├── Properties
-│   │   └── launchSettings.json
-│   ├── AccountingSystem.csproj
-│   ├── AccountingSystem.csproj.user
-│   ├── AccountingSystem.http
-│   ├── appsettings.Development.json
-│   ├── appsettings.json
-│   ├── Program.cs
-│   └── WeatherForecast.cs
-├── AccountingSystem_backup_20250920_155513
-│   ├── Controllers
-│   │   └── WeatherForecastController.cs
-│   ├── Properties
-│   │   └── launchSettings.json
-│   ├── AccountingSystem.csproj
-│   ├── AccountingSystem.csproj.user
-│   ├── AccountingSystem.http
-│   ├── appsettings.Development.json
-│   ├── appsettings.json
-│   ├── Program.cs
-│   └── WeatherForecast.cs
+﻿├── .github
+│   ├── ISSUE_TEMPLATE
+│   │   ├── bug_report.yml
+│   │   └── feature_request.yml
+│   ├── workflows
+│   │   ├── codeql.yml
+│   │   ├── dotnet-cd.yml
+│   │   ├── dotnet-ci.yml
+│   │   ├── release-drafter.yml
+│   │   └── release.yml
+│   ├── CODEOWNERS
+│   ├── dependabot.yml
+│   ├── pull_request_template.md
+│   └── release-drafter.yml
 ├── src
 │   ├── Accounting.Api
 │   │   ├── Controllers
 │   │   │   └── WeatherForecastController.cs
 │   │   ├── Properties
 │   │   │   └── launchSettings.json
+│   │   ├── .dockerignore
 │   │   ├── Accounting.Api.csproj
 │   │   ├── Accounting.Api.csproj.user
 │   │   ├── Accounting.Api.http
 │   │   ├── appsettings.Development.json
 │   │   ├── appsettings.json
-│   │   └── Program.cs
+│   │   ├── Dockerfile
+│   │   ├── Program.cs
+│   │   └── WeatherForecast.cs
 │   ├── Accounting.Application
 │   │   ├── Accounting.Application.csproj
 │   │   └── Class1.cs
@@ -44,8 +37,15 @@
 │   │   ├── Accounting.Infrastructure.csproj
 │   │   └── Class1.cs
 │   └── Accounting.Tests
+│       ├── Integration
+│       │   └── ApiIntegrationTests.cs
 │       ├── Accounting.Tests.csproj
 │       └── UnitTest1.cs
+├── .gitignore
 ├── AccountingSystem.sln
+├── AccountingSystem_backup_20250920_155513.zip
+├── AccountingSystem_legacy.zip
 ├── migrate-to-src.ps1
-└── project-structure.txt
+├── project-structure.txt
+├── README.md
+└── USAGE.md
