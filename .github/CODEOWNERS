@@ -1,28 +1,28 @@
 # Global owners
-* @yourusername
+* @HeshamAbdallah02
 
 # API layer
-src/Accounting.Api/ @yourusername @api-team
+src/Accounting.Api/ @HeshamAbdallah02 @api-team
 
 # Domain layer - requires architecture review
-src/Accounting.Domain/ @yourusername @architecture-team
+src/Accounting.Domain/ @HeshamAbdallah02 @architecture-team
 
 # Infrastructure layer
-src/Accounting.Infrastructure/ @yourusername @infrastructure-team
+src/Accounting.Infrastructure/ @HeshamAbdallah02 @infrastructure-team
 
 # Application layer
-src/Accounting.Application/ @yourusername
+src/Accounting.Application/ @HeshamAbdallah02
 
 # Tests
-src/Accounting.Tests/ @yourusername @qa-team
+src/Accounting.Tests/ @HeshamAbdallah02 @qa-team
 
 # CI/CD workflows
-.github/workflows/ @yourusername @devops-team
+.github/workflows/ @HeshamAbdallah02 @devops-team
 
 # Documentation
-*.md @yourusername @docs-team
+*.md @HeshamAbdallah02 @docs-team
 
 # Configuration files
-*.json @yourusername
-*.yml @yourusername
-*.yaml @yourusername
+*.json @HeshamAbdallah02
+*.yml @HeshamAbdallah02
+*.yaml @HeshamAbdallah02

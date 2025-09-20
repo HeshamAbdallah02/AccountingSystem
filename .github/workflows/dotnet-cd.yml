@@ -4,13 +4,22 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}/accounting-api
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -24,6 +33,14 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '9.0.x'
+        
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
         
     - name: Restore dependencies
       run: dotnet restore
@@ -64,11 +81,64 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: 
+      name: staging
+      url: https://accounting-staging.yourdomain.com
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+    
+    steps:
+    - name: Deploy to Staging
+      run: |
+        echo "?? Deploying to Staging Environment"
+        echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${{ github.sha }}"
+        echo "Environment: staging"
+        # Add your staging deployment commands here
+        # Example: kubectl, docker-compose, or cloud provider CLI commands
+        
+    - name: Run Health Check
+      run: |
+        echo "?? Running health checks on staging environment"
+        # Add health check commands here
+        # curl -f https://accounting-staging.yourdomain.com/health || exit 1
         
     - name: Generate deployment summary
       run: |
-        echo "## Deployment Summary ??" >> $GITHUB_STEP_SUMMARY
-        echo "- **Image:** \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
-        echo "- **Tags:** \`${{ steps.meta.outputs.tags }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "## Staging Deployment Summary ??" >> $GITHUB_STEP_SUMMARY
+        echo "- **Environment:** staging" >> $GITHUB_STEP_SUMMARY
+        echo "- **Image:** \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
         echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
-        echo "- **Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **URL:** https://accounting-staging.yourdomain.com" >> $GITHUB_STEP_SUMMARY
+
+  deploy-production:
+    needs: [build, deploy-staging]
+    runs-on: ubuntu-latest
+    environment: 
+      name: production
+      url: https://accounting.yourdomain.com
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'production'
+    
+    steps:
+    - name: Deploy to Production
+      run: |
+        echo "?? Deploying to Production Environment"
+        echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${{ github.sha }}"
+        echo "Environment: production"
+        # Add your production deployment commands here
+        
+    - name: Run Health Check
+      run: |
+        echo "?? Running health checks on production environment"
+        # Add health check commands here
+        # curl -f https://accounting.yourdomain.com/health || exit 1
+        
+    - name: Generate deployment summary
+      run: |
+        echo "## Production Deployment Summary ??" >> $GITHUB_STEP_SUMMARY
+        echo "- **Environment:** production" >> $GITHUB_STEP_SUMMARY
+        echo "- **Image:** \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **URL:** https://accounting.yourdomain.com" >> $GITHUB_STEP_SUMMARY
