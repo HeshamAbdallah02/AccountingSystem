@@ -1,6 +1,6 @@
 # AccountingSystem
 
-A comprehensive accounting system built with .NET 9, following Clean Architecture principles and best practices.
+A comprehensive accounting system built with .NET 8 (LTS), following Clean Architecture principles and best practices.
 
 ## Overview
 
@@ -18,7 +18,7 @@ The solution follows Clean Architecture patterns with the following projects:
 
 ## Prerequisites
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (LTS)
 - [Git](https://git-scm.com/)
 
 ## Getting Started

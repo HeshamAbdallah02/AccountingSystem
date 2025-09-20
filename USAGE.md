@@ -1,6 +1,6 @@
 # AccountingSystem DevOps Usage Guide ??
 
-This guide explains how to use the CI/CD pipeline, work with pull requests, and deploy the AccountingSystem application.
+This guide explains how to use the CI/CD pipeline, work with pull requests, and deploy the AccountingSystem application built with .NET 8 (LTS).
 
 ## Table of Contents
 - [CI/CD Overview](#cicd-overview)
@@ -144,7 +144,7 @@ git checkout -b feature/add-invoice-management
 # Make your code changes
 # Add files, modify existing code...
 
-# Test locally
+# Test locally (.NET 8)
 dotnet build
 dotnet test
 dotnet run --project src/Accounting.Api
@@ -247,7 +247,7 @@ git push origin v1.2.0
 **Problem**: `dotnet build` fails in CI
 **Solution**:
 ```bash
-# Check locally first
+# Check locally first (.NET 8)
 dotnet clean
 dotnet restore
 dotnet build
@@ -273,7 +273,7 @@ dotnet test --configuration Release --verbosity detailed
 **Problem**: Docker image build fails
 **Solution**:
 ```bash
-# Test Docker build locally
+# Test Docker build locally (.NET 8)
 docker build -t accounting-api -f src/Accounting.Api/Dockerfile .
 
 # Check Dockerfile paths and dependencies
@@ -326,7 +326,7 @@ gh pr status
 
 ### Docker Commands
 ```bash
-# Pull latest image
+# Pull latest image (.NET 8)
 docker pull ghcr.io/heshamabdallah02/accountingsystem/accounting-api:latest
 
 # Run locally
@@ -349,4 +349,4 @@ docker history ghcr.io/heshamabdallah02/accountingsystem/accounting-api:latest
 | Check workflow status | `gh run list` |
 | Approve production | Actions ? Review deployments |
 
-**Remember**: Always test locally before pushing, and ensure all CI checks pass before merging to `main`! ??
+**Remember**: Always test locally with .NET 8 before pushing, and ensure all CI checks pass before merging to `main`! ??

@@ -68,7 +68,7 @@ template: |
   # Checkout this version
   git checkout v$RESOLVED_VERSION
   
-  # Build and run
+  # Build and run (.NET 8 LTS)
   dotnet build
   dotnet run --project src/Accounting.Api
   ```
