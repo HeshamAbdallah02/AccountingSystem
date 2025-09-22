@@ -2,48 +2,24 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Net;
-using Testcontainers.MsSql;
 using Xunit;
 
 namespace Accounting.Tests.Integration;
 
-public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>, IAsyncLifetime
+public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
-    private readonly MsSqlContainer _sqlContainer;
 
     public ApiIntegrationTests(WebApplicationFactory<Program> factory)
     {
         _factory = factory;
-        _sqlContainer = new MsSqlBuilder()
-            .WithPassword("TestPassword123!")
-            .WithCleanUp(true)
-            .Build();
-    }
-
-    public async Task InitializeAsync()
-    {
-        await _sqlContainer.StartAsync();
-    }
-
-    public async Task DisposeAsync()
-    {
-        await _sqlContainer.DisposeAsync();
     }
 
     [Fact]
     public async Task Get_WeatherForecast_ReturnsSuccessAndCorrectContentType()
     {
         // Arrange
-        var client = _factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureServices(services =>
-            {
-                // Configure test services here if needed
-                // services.AddDbContext<AppDbContext>(options =>
-                //     options.UseSqlServer(_sqlContainer.GetConnectionString()));
-            });
-        }).CreateClient();
+        var client = _factory.CreateClient();
 
         // Act
         var response = await client.GetAsync("/WeatherForecast");
@@ -64,9 +40,30 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         var response = await client.GetAsync("/health");
 
         // Assert
-        // This will return 404 for now since we haven't implemented health checks
-        // Once implemented, change to: response.EnsureSuccessStatusCode();
-        Assert.True(response.StatusCode == HttpStatusCode.NotFound || 
-                   response.StatusCode == HttpStatusCode.OK);
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Get_NonExistentEndpoint_ReturnsNotFound()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+
+        // Act
+        var response = await client.GetAsync("/nonexistent");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Application_StartsSuccessfully()
+    {
+        // Arrange & Act
+        var client = _factory.CreateClient();
+
+        // Assert - If we can create a client, the application started successfully
+        Assert.NotNull(client);
     }
 }
