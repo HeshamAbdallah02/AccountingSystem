@@ -7,11 +7,48 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build-and-test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+  # Build and test on Windows (without SQL Server container)
+  build-and-test-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+          ${{ github.workspace }}/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+          
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build solution
+      run: dotnet build --no-restore --configuration Release
+      
+    - name: Run unit tests (Windows)
+      run: dotnet test --no-build --configuration Release --verbosity normal --logger trx --results-directory ./test-results
+        
+    - name: Upload test results (Windows)
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-windows
+        path: ./test-results/**/*.trx
+
+  # Build and test on Ubuntu with SQL Server integration tests
+  build-and-test-ubuntu:
+    runs-on: ubuntu-latest
     
     services:
       sqlserver:
@@ -55,7 +92,7 @@ jobs:
     - name: Install ReportGenerator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
       
-    - name: Run tests with coverage
+    - name: Run tests with coverage and SQL Server
       run: |
         dotnet test --no-build --configuration Release --verbosity normal \
           --collect:"XPlat Code Coverage" \
@@ -66,44 +103,39 @@ jobs:
         ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=AccountingSystemTest;User Id=sa;Password=TestPassword123!;TrustServerCertificate=true"
         
     - name: Generate coverage report
-      if: matrix.os == 'ubuntu-latest'
       run: |
         reportgenerator \
           -reports:"coverage/**/coverage.cobertura.xml" \
           -targetdir:"coverage/report" \
           -reporttypes:"Html;Cobertura;JsonSummary"
         
-    - name: Upload test results
+    - name: Upload test results (Ubuntu)
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-results-${{ matrix.os }}
+        name: test-results-ubuntu
         path: |
           ./coverage/**/*.trx
           ./coverage/**/*.xml
         
     - name: Upload coverage report
       uses: actions/upload-artifact@v4
-      if: matrix.os == 'ubuntu-latest'
       with:
         name: coverage-report
         path: ./coverage/report/
         
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
-      if: matrix.os == 'ubuntu-latest'
       with:
         directory: ./coverage
         fail_ci_if_error: false
         verbose: true
         
     - name: Build API for Docker
-      if: matrix.os == 'ubuntu-latest'
       run: dotnet publish src/Accounting.Api/Accounting.Api.csproj --configuration Release --output ./publish
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
-      if: matrix.os == 'ubuntu-latest'
       with:
         name: build-artifacts
         path: ./publish
