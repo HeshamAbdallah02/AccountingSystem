@@ -70,6 +70,27 @@ When running the application, Swagger documentation is available at:
 - `https://localhost:5001/swagger` (HTTPS)
 - `http://localhost:5000/swagger` (HTTP)
 
+## Security
+
+This project includes comprehensive security scanning and code analysis:
+
+### Code Scanning
+- **CodeQL Analysis**: Automated security and quality scanning with GitHub CodeQL
+- **Dependency Scanning**: Vulnerability detection for NuGet packages
+- **Secrets Detection**: Automated detection of exposed secrets and credentials
+- **Container Security**: Docker image vulnerability scanning
+
+### Security Workflows
+- CodeQL runs on every push/PR to `main` and `develop` branches
+- Weekly scheduled security scans
+- Additional security tools run on push and PRs
+
+### Viewing Security Results
+Security scan results are available in the repository's **Security** tab:
+- Code scanning alerts
+- Dependency vulnerabilities  
+- Secret scanning alerts
+
 ## Contributing
 
 1. Fork the repository
