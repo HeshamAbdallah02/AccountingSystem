@@ -30,8 +30,8 @@ Our DevOps pipeline consists of three main workflows:
   - Deploys to Staging (automatic)
   - Deploys to Production (requires approval)
 
-### ?? **Security**
-- **CodeQL**: Weekly security scans
+### 🔒 **Security**
+- **CodeQL**: Weekly security scans (see [CodeQL Setup Guide](docs/CODEQL_SETUP.md))
 - **Dependabot**: Automatic dependency updates
 
 ## Running CI/CD Manually
@@ -269,7 +269,20 @@ dotnet test --configuration Release --verbosity detailed
 # - Time zones
 ```
 
-#### ? Docker Build Fails
+#### 🔍 CI Fails with Container Error
+**Problem**: "Container operations are only supported on Linux runners"
+**Solution**: 
+This has been fixed in the CI workflow. The SQL Server container now only runs on Ubuntu runners.
+- Windows runners run tests without the database container
+- Ubuntu runners run full integration tests with SQL Server
+- Both runners complete the build and basic test suite
+
+#### 🔒 CodeQL Setup Issues
+**Problem**: Code scanning not showing results
+**Solution**:
+See the [CodeQL Setup Guide](docs/CODEQL_SETUP.md) for step-by-step instructions to enable code scanning in repository settings.
+
+#### 🐳 Docker Build Fails
 **Problem**: Docker image build fails
 **Solution**:
 ```bash
@@ -344,9 +357,11 @@ docker history ghcr.io/heshamabdallah02/accountingsystem/accounting-api:latest
 |--------|---------|
 | Create feature branch | `git checkout -b feature/my-feature` |
 | Run tests locally | `dotnet test` |
+| Check health endpoint | `curl http://localhost:5000/health` |
 | Create PR | `gh pr create` |
-| Trigger deployment | GitHub Actions ? Run workflow |
+| Trigger deployment | GitHub Actions → Run workflow |
 | Check workflow status | `gh run list` |
-| Approve production | Actions ? Review deployments |
+| Approve production | Actions → Review deployments |
+| Setup CodeQL | See [CodeQL Guide](docs/CODEQL_SETUP.md) |
 
 **Remember**: Always test locally with .NET 8 before pushing, and ensure all CI checks pass before merging to `main`! ??
