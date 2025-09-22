@@ -17,11 +17,10 @@ Our DevOps pipeline consists of three main workflows:
 ### ?? **CI (Continuous Integration)**
 - **Triggers**: Push/PR to `main` or `develop`
 - **What it does**: 
-  - Builds on Windows & Ubuntu
-  - Runs tests with SQL Server
-  - Generates code coverage
-  - Security scanning
+  - Builds on Windows
+  - Runs unit and integration tests
   - Caches NuGet packages
+  - Generates build artifacts
 
 ### ?? **CD (Continuous Deployment)**
 - **Triggers**: Push to `main` or manual trigger
@@ -74,7 +73,7 @@ graph LR
     A[Create PR] --> B[CI Triggers]
     B --> C[Build & Test]
     C --> D[Security Scan]
-    D --> E[Code Coverage]
+    D --> E[Artifacts Generated]
     E --> F{All Checks Pass?}
     F -->|Yes| G[? Ready to Merge]
     F -->|No| H[? Fix Issues]
@@ -84,11 +83,10 @@ graph LR
 
 ### PR Status Checks
 
-- ? **Build (Ubuntu)**: Code compiles successfully
-- ? **Build (Windows)**: Cross-platform compatibility
-- ? **Tests**: All unit/integration tests pass
+- ? **Build (Windows)**: Code compiles successfully
+- ? **Tests**: All unit and integration tests pass
 - ? **CodeQL**: No security vulnerabilities
-- ? **Coverage**: Code coverage report generated
+- ? **Artifacts**: Build artifacts generated
 
 ### PR Requirements
 
@@ -179,19 +177,18 @@ gh pr create \
 
 **What happens next:**
 1. ?? CI workflow starts automatically
-2. ?? Tests run on Windows & Ubuntu
+2. ?? Tests run on Windows
 3. ?? CodeQL security scan runs
-4. ?? Code coverage report generated
+4. ?? Build artifacts generated
 5. ?? PR template fills out automatically
 
 ### Step 5: Monitor CI Results
 Go to your PR page and watch the checks:
 
 ```
-? CI / build-and-test (ubuntu-latest)
-? CI / build-and-test (windows-latest)  
+? CI / build-and-test-windows
 ? CodeQL Security Scan
-?? Coverage report (uploading...)
+?? Build artifacts (uploading...)
 ```
 
 ### Step 6: Code Review
@@ -265,7 +262,7 @@ dotnet test --configuration Release --verbosity detailed
 
 # Check for environment-specific issues
 # - Database connection strings
-# - File paths (Windows vs Linux)
+# - File paths (Windows specific)
 # - Time zones
 ```
 
