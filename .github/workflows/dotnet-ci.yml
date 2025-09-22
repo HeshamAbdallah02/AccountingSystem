@@ -15,17 +15,13 @@ jobs:
     
     services:
       sqlserver:
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        image: ${{ matrix.os == 'ubuntu-latest' && 'mcr.microsoft.com/mssql/server:2022-latest' || '' }}
         env:
-          ACCEPT_EULA: Y
-          MSSQL_SA_PASSWORD: TestPassword123!
+          ACCEPT_EULA: ${{ matrix.os == 'ubuntu-latest' && 'Y' || '' }}
+          MSSQL_SA_PASSWORD: ${{ matrix.os == 'ubuntu-latest' && 'TestPassword123!' || '' }}
         ports:
-          - 1433:1433
-        options: >-
-          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TestPassword123! -Q 'SELECT 1'"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+          - ${{ matrix.os == 'ubuntu-latest' && '1433:1433' || '' }}
+        options: ${{ matrix.os == 'ubuntu-latest' && '--health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TestPassword123! -Q ''SELECT 1''" --health-interval=10s --health-timeout=5s --health-retries=3' || '' }}
     
     steps:
     - name: Checkout code
@@ -63,7 +59,7 @@ jobs:
           --logger trx \
           --logger "console;verbosity=detailed"
       env:
-        ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=AccountingSystemTest;User Id=sa;Password=TestPassword123!;TrustServerCertificate=true"
+        ConnectionStrings__DefaultConnection: ${{ matrix.os == 'ubuntu-latest' && 'Server=localhost,1433;Database=AccountingSystemTest;User Id=sa;Password=TestPassword123!;TrustServerCertificate=true' || '' }}
         
     - name: Generate coverage report
       if: matrix.os == 'ubuntu-latest'

@@ -81,6 +81,8 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        build-args: |
+          BUILDKIT_INLINE_CACHE=1
 
   deploy-staging:
     needs: build
@@ -101,8 +103,10 @@ jobs:
         
     - name: Run Health Check
       run: |
-        echo "?? Running health checks on staging environment"
-        # Add health check commands here
+        echo "🔍 Running health checks on staging environment"
+        echo "📋 Health check endpoint configured at /health"
+        echo "✅ Deployment verification can be performed using: curl -f https://accounting-staging.yourdomain.com/health"
+        # Add actual health check commands here when staging URL is available
         # curl -f https://accounting-staging.yourdomain.com/health || exit 1
         
     - name: Generate deployment summary
@@ -131,8 +135,10 @@ jobs:
         
     - name: Run Health Check
       run: |
-        echo "?? Running health checks on production environment"
-        # Add health check commands here
+        echo "🔍 Running health checks on production environment"
+        echo "📋 Health check endpoint configured at /health"
+        echo "✅ Deployment verification can be performed using: curl -f https://accounting.yourdomain.com/health"
+        # Add actual health check commands here when production URL is available
         # curl -f https://accounting.yourdomain.com/health || exit 1
         
     - name: Generate deployment summary
