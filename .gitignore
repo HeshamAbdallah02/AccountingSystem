@@ -384,7 +384,7 @@ FodyWeavers.xsd
 .idea/
 
 # Docker
-Dockerfile
+# Dockerfile
 .dockerignore
 
 # Environment files
