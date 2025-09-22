@@ -18,14 +18,14 @@ Our DevOps pipeline consists of three main workflows:
 - **Triggers**: Push/PR to `main` or `develop`
 - **What it does**: 
   - Builds on Windows
-  - Runs unit and integration tests
+  - Runs unit and integration tests (Windows-compatible)
   - Caches NuGet packages
   - Generates build artifacts
 
 ### ?? **CD (Continuous Deployment)**
 - **Triggers**: Push to `main` or manual trigger
 - **What it does**:
-  - Builds Docker image
+  - Builds Docker image (on Linux runners)
   - Deploys to Staging (automatic)
   - Deploys to Production (requires approval)
 
@@ -85,7 +85,7 @@ graph LR
 
 - ? **Build (Windows)**: Code compiles successfully
 - ? **Tests**: All unit and integration tests pass
-- ? **CodeQL**: No security vulnerabilities
+- ? **CodeQL**: No security vulnerabilities (if enabled)
 - ? **Artifacts**: Build artifacts generated
 
 ### PR Requirements
@@ -178,7 +178,7 @@ gh pr create \
 **What happens next:**
 1. ?? CI workflow starts automatically
 2. ?? Tests run on Windows
-3. ?? CodeQL security scan runs
+3. ?? CodeQL security scan runs (if enabled)
 4. ?? Build artifacts generated
 5. ?? PR template fills out automatically
 
@@ -187,7 +187,7 @@ Go to your PR page and watch the checks:
 
 ```
 ? CI / build-and-test-windows
-? CodeQL Security Scan
+? CodeQL Security Scan (if enabled)
 ?? Build artifacts (uploading...)
 ```
 
@@ -266,6 +266,22 @@ dotnet test --configuration Release --verbosity detailed
 # - Time zones
 ```
 
+#### ? Docker-related Test Issues
+**Problem**: Tests requiring Docker containers fail on Windows CI
+**Solution**:
+```bash
+# Use in-memory databases for testing instead of containers
+# Mark Docker-dependent tests with [Trait("Category", "RequiresDocker")]
+# These tests will be skipped in CI but can run locally with Docker Desktop
+
+[Fact]
+[Trait("Category", "RequiresDocker")]
+public async Task IntegrationTest_WithRealDatabase()
+{
+    // This test will be skipped in CI
+}
+```
+
 #### ? Docker Build Fails
 **Problem**: Docker image build fails
 **Solution**:
@@ -333,6 +349,21 @@ docker run -p 8080:8080 ghcr.io/heshamabdallah02/accountingsystem/accounting-api
 docker history ghcr.io/heshamabdallah02/accountingsystem/accounting-api:latest
 ```
 
+### Local Testing Commands
+```bash
+# Run all tests
+dotnet test
+
+# Run tests excluding Docker-dependent ones (same as CI)
+dotnet test --filter "Category!=RequiresDocker"
+
+# Run only unit tests
+dotnet test --filter "FullyQualifiedName!~Integration"
+
+# Run tests with coverage
+dotnet test --collect:"XPlat Code Coverage"
+```
+
 ---
 
 ## ?? Quick Reference
@@ -341,6 +372,7 @@ docker history ghcr.io/heshamabdallah02/accountingsystem/accounting-api:latest
 |--------|---------|
 | Create feature branch | `git checkout -b feature/my-feature` |
 | Run tests locally | `dotnet test` |
+| Run CI-compatible tests | `dotnet test --filter "Category!=RequiresDocker"` |
 | Create PR | `gh pr create` |
 | Trigger deployment | GitHub Actions ? Run workflow |
 | Check workflow status | `gh run list` |
