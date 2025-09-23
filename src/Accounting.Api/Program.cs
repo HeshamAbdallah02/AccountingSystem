@@ -36,5 +36,7 @@ app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthC
 
 app.Run();
 
-// Make Program class visible for testing
+/// <summary>
+/// Main program class for the Accounting API application
+/// </summary>
 public partial class Program { }
