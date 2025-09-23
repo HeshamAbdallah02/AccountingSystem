@@ -14,7 +14,12 @@ public static class SwaggerApplicationBuilderExtensions
     /// <returns>The application builder for chaining</returns>
     public static IApplicationBuilder UseSwaggerWithUI(this IApplicationBuilder app, IWebHostEnvironment env, bool allowInNonDev = false)
     {
-        if (env.IsDevelopment() || allowInNonDev)
+        // Enable Swagger in Development, CI environments, or when explicitly allowed
+        var isCIEnvironment = env.EnvironmentName.Equals("CI", StringComparison.OrdinalIgnoreCase) || 
+                             !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CI")) ||
+                             !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_ACTIONS"));
+        
+        if (env.IsDevelopment() || isCIEnvironment || allowInNonDev)
         {
             app.UseSwagger();
             app.UseSwaggerUI(options =>

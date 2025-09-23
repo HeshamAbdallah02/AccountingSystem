@@ -18,6 +18,10 @@ public class WeatherForecastController : ControllerBase
 
     private readonly ILogger<WeatherForecastController> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the WeatherForecastController
+    /// </summary>
+    /// <param name="logger">The logger instance for this controller</param>
     public WeatherForecastController(ILogger<WeatherForecastController> logger)
     {
         _logger = logger;
