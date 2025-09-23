@@ -62,8 +62,13 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange & Act
         var client = _factory.CreateClient();
+        
+        // Test that the application actually responds to a basic request
+        var response = await client.GetAsync("/health");
 
-        // Assert - If we can create a client, the application started successfully
+        // Assert - If we can create a client and get a response, the application started successfully
         Assert.NotNull(client);
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }
