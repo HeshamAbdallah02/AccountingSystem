@@ -50,6 +50,46 @@ jobs:
     - name: Build API for publishing
       run: dotnet publish src/Accounting.Api/Accounting.Api.csproj --configuration Release --output ./publish
       
+    - name: Export Swagger JSON
+      run: |
+        # Start the API in background with in-memory DB for CI
+        $env:ASPNETCORE_ENVIRONMENT = "Development"
+        $env:USE_INMEMORY_DB = "true"
+        Start-Process -NoNewWindow -FilePath "dotnet" -ArgumentList "run --project src/Accounting.Api" -RedirectStandardOutput "api-output.log" -RedirectStandardError "api-error.log"
+        
+        # Wait for API to start
+        Start-Sleep -Seconds 10
+        
+        # Download swagger.json
+        try {
+          Invoke-WebRequest -Uri "http://localhost:5000/swagger/v1/swagger.json" -OutFile "swagger.json" -TimeoutSec 30
+          Write-Host "Swagger JSON exported successfully"
+          Get-Content "swagger.json" | Select-Object -First 10
+        } catch {
+          Write-Host "Failed to download swagger.json, trying port 5001 with HTTPS..."
+          try {
+            Invoke-WebRequest -Uri "https://localhost:5001/swagger/v1/swagger.json" -OutFile "swagger.json" -TimeoutSec 30 -SkipCertificateCheck
+            Write-Host "Swagger JSON exported successfully from HTTPS endpoint"
+          } catch {
+            Write-Host "Failed to export swagger.json: $_"
+            Write-Host "API Output:"
+            if (Test-Path "api-output.log") { Get-Content "api-output.log" }
+            Write-Host "API Errors:"
+            if (Test-Path "api-error.log") { Get-Content "api-error.log" }
+            exit 1
+          }
+        }
+        
+        # Stop the API
+        Get-Process | Where-Object {$_.ProcessName -eq "Accounting.Api" -or $_.ProcessName -eq "dotnet"} | Stop-Process -Force -ErrorAction SilentlyContinue
+      shell: pwsh
+      
+    - name: Upload Swagger JSON
+      uses: actions/upload-artifact@v4
+      with:
+        name: swagger-json
+        path: swagger.json
+        
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:

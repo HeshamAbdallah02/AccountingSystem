@@ -1,11 +1,12 @@
+using AccountingSystem.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Add Swagger with authentication support
+builder.Services.AddSwaggerWithAuth(builder.Configuration);
 
 // Add health checks
 builder.Services.AddHealthChecks()
@@ -14,11 +15,7 @@ builder.Services.AddHealthChecks()
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerWithUI(app.Environment);
 
 app.UseHttpsRedirection();
 
